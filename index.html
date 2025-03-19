@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Inteligencia Artificial y Programación - Uso del lenguaje Logo - Francisco Lorite Muñoz</title>
+
+    <!-- CSS -->
+
+    <link href="css/style.css" rel="stylesheet" media="screen" type="text/css" />
+    <link href="css/menu.css"rel="stylesheet" type="text/css" />
+
+    <!-- Scripts -->
+    <link rel="stylesheet" href="scripts/jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" href="scripts/jquery-ui/jquery-ui.theme.css">
+
+    <!-- Scripts externos -->
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="js/jquery-ui.min.js"></script>
+
+</head>
+<body>
+    <header>
+        <div class="title">
+            <h1>Inteligencia Artificial y Programación - Uso del lenguaje Logo - Francisco Lorite Muñoz</h1>
+        </div>
+    </header>
+    <div class="page">
+        <div id="sortie" style="position:relative; width:800px; height:500px; margin-left: auto; margin-right: auto; margin-bottom: 10px; display:block">
+            <canvas id="monde"
+                style="z-index: 2; position:absolute; left:0px; right:0px; top:0px;border:1px solid #00FF00;"
+                height="500px" width="800px">
+            </canvas>
+            <canvas id="dessin"
+                style="z-index: 1; position:absolute; left:0px; right:0px; top:0px; border:1px solid #FF0000; "
+                height="500px" width="800px">
+            </canvas>
+            <canvas id="tortue"
+                style="z-index: 3; position:absolute; left:0px; right:0px; top:0px;border:1px solid #0000FF; "
+                height="500px" width="800px">
+            </canvas>
+            <div id="WebGLCanvas" style="z-index: 4; position:absolute; left:0px; right:0px; top:0px;border:none;">
+            </div>
+        </div>
+        <div style="text-align: center; margin-bottom: 20px">
+            <button id="play" style="vertical-align: top;margin-top:2px;">Ejecutar</button>
+            <button id="stop" style="vertical-align: top;margin-top:2px;">Alto</button>
+        </div>
+        <div id="tabs">
+            <ul>
+                <li><a href="#tabs-int">Logo</a></li>
+                <li><a href="#tabs-conf">Configuración</a></li>
+                <li><a href="#tabs-cmd">Principales primitivas de Logo</a></li>
+                <li><a href="#tabs-ex">Ejemplos</a></li>
+                <li><a href="#tabs-export">Exportar dibujo</a></li>
+                <li><a href="#tabs-ayuda">Ayuda</a></li>
+            </ul>
+            <div id="err_dialog" title="Erreur">
+                <p>Languaje Logo en castellano</p>
+            </div>
+            <div id="tabs-int" style="height:300px;overflow:auto;">
+                <div id="editor_es" style="height: 310px;border: 1px solid #DDD;border-radius: 4px; border-bottom-right-radius: 0px; margin-top: 5px;">
+                    <pre>; Programa de demostración
+
+PARA Espiral :N :D :S :A
+    BAJALAPIZ
+    HAZ "x :D
+    REPITE REDONDEA :N / :S [AVANZA :X GIRAIZQUIERDA :A HAZ "x :X + :S]
+FIN
+
+PARA Espirales
+    BORRAPANTALLA
+    PONCOLORLAPIZ [255 0 0] espiral 200 0 1.1 53
+    ESPERA 100 BORRAPANTALLA
+    PONCOLORLAPIZ [0 255 0] espiral 300 0 4 90
+    ESPERA 100 BORRAPANTALLA
+    PONCOLORLAPIZ [0 0 255] espiral 500 0 3 178
+    PONCOLORLAPIZ [0 0 0]
+    SUBELAPIZ
+    CENTRO
+    PONRUMBO 0
+    BAJALAPIZ
+FIN
+
+MUESTRATORTUGA
+Espirales
+                    </pre>
+                </div>
+            </div>
+            <div id="tabs-conf" style="width:auto;height:260px;overflow:auto;">
+                <table style="width: 450px">
+                    <tr>
+                        <td>Modo :</td>
+                        <td>
+                            <select id="affichage">
+                                <option>2d</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Velocidad :</td>
+                        <td><input id="vitesse" type="range" value="50" max="100" min="0" step="5"></td>
+                    </tr>
+                    <tr>
+                        <td>Tortuga :</td>
+                        <td>
+                            <select id="seltortue">
+                                <option>1 Puntero</option>
+                                <option>2 Robot</option>
+                                <option>3 Tortuga</option>
+                                <option>4 Probot</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Fondo :</td>
+                        <td>
+                            <select id="selfond">
+                                <option>Blanco</option>
+                                <option>Cuadriculado</option>
+                                <option>Seyes</option>
+                                <option>Con marcadores</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="tabs-cmd" style="height:260px;overflow:auto;">
+                <table>
+                    <caption>Uso de la tortuga Logo</caption>
+                    <tr>
+                        <th width="20%">Primitivas</th>
+                        <th width="10%">Alias</th>
+                        <th width="50%">Descripción</th>
+                        <th width="30%">Ejemplo</th>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">AVANZA</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">AV</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td>La tortuga avanza el número indicado de puntos</td>
+                        <td class="code">
+                            <span class="kw1">AVANZA</span>
+                            <span class="nu0">10</span>
+                            <br>
+                            <span class="kw1">AV</span>
+                            <span class="nu0">5</span>
+                            <span class="sy0">*</span>
+                            <span class="nu0">3</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">BAJALAPIZ</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">BL</span>
+                        </td>
+                        <td>El lápiz toca el papel y pinta cuando se mueve.</td>
+                        <td class="code">
+                            <span class="kw1">BL</span>
+                            <br>
+                            <span class="kw1">BajaLapiz</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">CENTRO</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Lleva la tortuga al centro de la pantalla sin borrar.</td>
+                        <td class="code">
+                            <span class="kw1">Centro</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">ESPERA</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1"></span>
+                            <span class="nu0"></span>
+                        </td>
+                        <td>
+                            Pide a la tortuga a un <i>n</i>
+                            /60 de un segundo descanso.
+                        </td>
+                        <td class="code">
+                            <span class="kw1">Espera</span>
+                            <span class="nu0">100</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">GIRADERECHA</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">GD</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td>Gira a la derecha el ángulo especificado en grados.</td>
+                        <td class="code">
+                            <span class="kw1">GiraDerecha</span>
+                            <span class="nu0">90</span>
+                            <br>
+                            <span class="kw1">GD</span>
+                            <span class="nu0">45</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">GIRAIZQUIERDA </span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">GI</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td>Gira a la izquierda el ángulo especificado en grados.</td>
+                        <td class="code">
+                            <span class="kw1">GiraIzquierda</span>
+                            <span class="nu0">90</span>
+                            <br>
+                            <span class="kw1">GI</span>
+                            <span class="nu0">45</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">OCULTATORTUGA</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">OT</span>
+                        </td>
+                        <td>Oculta el icono de la tortuga.</td>
+                        <td class="code">
+                            <span class="kw1">OT</span>
+                            <br>
+                            <span class="kw1">OcultaTortuga</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">PONCOLORLAPIZ</span>
+                            <span class="nu0">c</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">PONCL</span>
+                            <span class="nu0">c</span>
+                        </td>
+                        <td>Establece el color con que pinta. Colores predefinidos son BLANCO, AZUL , MARRON, CIAN ,
+                            GRIS ,
+                            AMARILLO, CIAN , NEGRO , ROJO, VERDE.
+                        </td>
+                        <td class="code">
+                            <span class="kw1">PonCL</span>
+                            <span class="nu0">[ 64 128 0 ]</span>
+                            <br>
+                            <span class="kw1">PonColoLapiz</span>
+                            <span class="nu0">azul</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">PONPOS</span>
+                            <span class="nu0">[x y]</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Sitúa la tortuga en las coordenadas especificadas.</td>
+                        <td class="code">
+                            <span class="kw1">PonPOS</span>
+                            <span class="nu0">[ -100 0 ]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">PONRUMBO</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Orienta la tortuga en la dirección del ángulo n.</td>
+                        <td class="code">
+                            <span class="kw1">PonRumbo </span>
+                            <span class="nu0">90</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">PONX</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Sitúa la tortuga en la coordenada X especificada.</td>
+                        <td class="code">
+                            <span class="kw1">PonX </span>
+                            <span class="nu0">100</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">PONXY</span>
+                            <span class="nu0">x y</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Sitúa la tortuga en las coordenadas especificadas.</td>
+                        <td class="code">
+                            <span class="kw1">PonXY </span>
+                            <span class="nu0">0 0</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">PONY</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Sitúa la tortuga en la coordenada Y especificada.</td>
+                        <td class="code">
+                            <span class="kw1">PonY </span>
+                            <span class="nu0">100</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">RETROCEDE </span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">RE</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td>Retrocede el número de puntos especificado.</td>
+                        <td class="code">
+                            <span class="kw1">Retrocede</span>
+                            <span class="nu0">10</span>
+                            <br>
+                            <span class="kw1">RE</span>
+                            <span class="nu0">5</span>
+                            <span class="sy0">*</span>
+                            <span class="nu0">3</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">RUMBO</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Da la orientación de la tortuga.</td>
+                        <td class="code">
+                            <span class="kw1">Muestra</span>
+                            <span class="kw1">RUMBO</span>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <caption>Cálculos matemáticos</caption>
+                    <tr>
+                        <th width="20%">Primitivas</th>
+                        <th width="10%">Alias</th>
+                        <th width="50%">Descripción</th>
+                        <th width="30%">Ejemplo</th>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">REDONDEA </span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Aproxima el número decimal n hasta el número entero más próximo.</td>
+                        <td class="code">
+                            <span class="kw1">Avanza</span>
+                            <span class="kw1">REDONDEA</span>
+                            <span class="nu0">20</span>
+                            <span class="sy0">/</span>
+                            <span class="nu0">3</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">COS</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Calcula el coseno de un ángulo.</td>
+                        <td class="code">
+                            <span class="kw1">COS</span>
+                            <span class="nu0">100</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">DIFERENCIA</span>
+                            <span class="nu0">n1 n2 n3...</span>
+                        </td>
+                        <td class="code">-</td>
+                        <td>Restar números (n1 - n2 - n3 ...)</td>
+                        <td class="code">
+                            <span class="kw1">GiraIzquierda </span>
+                            <span class="kw1">Diferencia</span>
+                            <span class="nu0">100 45</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">AZAR</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Generar un número aleatorio comprendido entre 0 y n</td>
+                        <td class="code">
+                            <span class="kw1">GiraIzquierda </span>
+                            <span class="kw1">Azar</span>
+                            <span class="nu0">360</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">LOG10</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Evaluar el logaritmo decimal de un número</td>
+                        <td class="code">
+                            <span class="kw1">Retrocede </span>
+                            <span class="kw1">Log10</span>
+                            <span class="nu0">100</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">MENOS</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code">-</td>
+                        <td>Cambiar el signo.</td>
+                        <td class="code">
+                            <span class="kw1">Avanza </span>
+                            <span class="kw1">Menos</span>
+                            <span class="nu0">10</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">PI</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>El número pi (la constante que relaciona el perímetro de una circunferencia con la amplitud
+                            de
+                            su diámetro)
+                        </td>
+                        <td class="code">
+                            <span class="kw1">GiraDerecha </span>
+                            <span class="kw1">PI</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">PRODUCTO</span>
+                            <span class="nu0">n1 n2 n3...</span>
+                        </td>
+                        <td class="code">
+                            *<br>
+                        </td>
+                        <td>Multiplicar números (n1 * n2 * n3...)</td>
+                        <td class="code">
+                            <span class="kw1">Producto</span>
+                            <span class="nu0">1 2 3 4 5</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">POTENCIA</span>
+                            <span class="nu0">n1 n2 </span>
+                        </td>
+                        <td class="code">^</td>
+                        <td>Calcular una potencia</td>
+                        <td class="code">
+                            <span class="kw1">Retrocede </span>
+                            <span class="kw1">Potencia</span>
+                            <span class="nu0">2 3</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">DIVISION</span>
+                            <span class="nu0">n1 n2 </span>
+                        </td>
+                        <td class="code">/</td>
+                        <td>Dividir dos números (n1 / n2)</td>
+                        <td class="code">
+                            <span class="kw1">división </span>
+                            <span class="nu0">12 4</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">RESTO</span>
+                            <span class="nu0">n1 n2</span>
+                        </td>
+                        <td class="code">%</td>
+                        <td>Resto de una división entera</td>
+                        <td class="code">
+                            <span class="kw1">Resto</span>
+                            <span class="nu0">10 3</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">RAIZCUADRADA</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">RC</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td>Hallar la raíz cuadrada de un número</td>
+                        <td class="code">
+                            <span class="kw1">RC</span>
+                            <span class="nu0">144</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">SENO</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">SEN</span>
+                            <span class="nu0">n</span>
+                        </td>
+                        <td>Calcula el seno de un ángulo.</td>
+                        <td class="code">
+                            <span class="kw1">GiraDerecha </span>
+                            <span class="kw1">Sen</span>
+                            <span class="nu0">200</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">SUMA</span>
+                            <span class="nu0">n1 n2 n3...</span>
+                        </td>
+                        <td class="code">+</td>
+                        <td>Sumar números</td>
+                        <td class="code">
+                            <span class="kw1">Retrocede </span>
+                            <span class="kw1">Suma</span>
+                            <span class="nu0">1 2 3 4 5</span>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <caption>Operaciones con listas</caption>
+                    <tr>
+                        <th width="20%">Primitivas</th>
+                        <th width="10%">Alias</th>
+                        <th width="50%">Descripción</th>
+                        <th width="30%">Ejemplo</th>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">ELEGIR</span>
+                            <span class="nu0">l</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Devolver un elemento al azar.</td>
+                        <td class="code">
+                            <span class="kw1">Avanza </span>
+                            <span class="kw1">Elegir</span>
+                            <span class="nu0">[ 10 20 15 12 ]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">CUENTA </span>
+                            <span class="nu0">l</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Contar el número de elementos.</td>
+                        <td class="code">
+                            <span class="kw1">MUESTRA </span>
+                            <span class="kw1">Cuenta</span>
+                            <span class="nu0">[ a b c d ]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">ULTIMO </span>
+                            <span class="nu0">l</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">UL </span>
+                            <span class="nu0">l</span>
+                        </td>
+                        <td>Devolver el último elemento.</td>
+                        <td class="code">
+                            <span class="kw1">Avanza </span>
+                            <span class="kw1">Ultimo </span>
+                            <span class="nu0">[ 10 20 15 12 ]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">QUITA</span>
+                            <span class="nu0">n l</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Quitar el elemento n.</td>
+                        <td class="code">
+                            <span class="kw1">Haz </span>
+                            "lst <span class="kw1">Quita</span>
+                            <span class="nu0">15 [ 10 20 15 12 ]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">INVIERTE </span>
+                            <span class="nu0">l</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Invertir la lista.</td>
+                        <td class="code">
+                            <span class="kw1">Haz</span>
+                            "lst <span class="kw1">Invierte </span>
+                            <span class="nu0">[ 5 4 3 2 1 ]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">ELEMENTO</span>
+                            <span class="nu0">n l</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Devolver el elmento n-simo.</td>
+                        <td class="code">
+                            <span class="kw1">Avanza </span>
+                            <span class="kw1">elemento</span>
+                            <span class="nu0">2 [ 10 20 15 12 ]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">LISTA </span>
+                            <span class="nu0">n1 n2 n3...</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Combinar en una lista</td>
+                        <td class="code">
+                            <span class="kw1">PonColorLapiz</span>
+                            <span class="kw1">Lista </span>
+                            <span class="nu0">255 0 255</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">PONULTIMO</span>
+                            <span class="nu0">e l</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">PU</span>
+                            <span class="nu0">e l</span>
+                        </td>
+                        <td>Añadir algo el último.</td>
+                        <td class="code">
+                            <span class="kw1">Haz</span>
+                            "lst <span class="kw1">PU</span>
+                            <span class="nu0">5 [ 1 2 3 4 ]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">PONPRIMERO</span>
+                            <span class="nu0">e l</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">PP</span>
+                            <span class="nu0">e l</span>
+                        </td>
+                        <td>Añadir algo el primero.</td>
+                        <td class="code">
+                            <span class="kw1">Haz</span>
+                            "lst <span class="kw1">PP</span>
+                            <span class="nu0">1 [ 2 3 4 5 ]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">MEZCLA</span>
+                            <span class="nu0">l</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Mezclar los elementos.</td>
+                        <td class="code">
+                            <span class="kw1">Haz</span>
+                            "lst <span class="kw1">Mezcla</span>
+                            <span class="nu0">[ Paul John Ringo Georges ]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">PRIMERO </span>
+                            <span class="nu0">l</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">PRI</span>
+                            <span class="nu0">l</span>
+                        </td>
+                        <td>Devolver el primer elemento.</td>
+                        <td class="code">
+                            <span class="kw1">GI </span>
+                            <span class="kw1">Pri</span>
+                            <span class="nu0">[ 45 90 135 180 225 ]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">MENOSULTIMO</span>
+                            <span class="nu0">l</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">MU</span>
+                            <span class="nu0">l</span>
+                        </td>
+                        <td>Quitar el último elemento.</td>
+                        <td class="code">
+                            <span class="kw1">Donne</span>
+                            "lst <span class="kw1">SD</span>
+                            <span class="nu0">[ 1 2 3 4 5 6 ]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">MENOSPRIMERO</span>
+                            <span class="nu0">l</span>
+                        </td>
+                        <td class="code">
+                            <span class="kw1">MP</span>
+                            <span class="nu0">l</span>
+                        </td>
+                        <td>Quitar el primer elemento.</td>
+                        <td class="code">
+                            <span class="kw1">Haz </span>
+                            "lst <span class="kw1">MenosPrimero</span>
+                            <span class="nu0">[ 0 1 2 3 4 5 ]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">VACIO?</span>
+                            <span class="nu0">l</span>
+                        </td>
+                        <td class="code"></td>
+                        <td></td>
+                        <td class="code">
+                            <span class="kw1">Muestra </span>
+                            <span class="kw1">Vacio?</span>
+                            <span class="nu0">[ ]</span>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <caption>Operadores lógicos y de comparación</caption>
+                    <tr>
+                        <th width="20%">Primitivas</th>
+                        <th width="10%">Alias</th>
+                        <th width="50%">Descripción</th>
+                        <th width="30%">Ejemplo</th>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">IGUALES? </span>
+                            <span class="nu0">n1 n2</span>
+                        </td>
+                        <td class="code">
+                            IGUAL?<br>=
+                        </td>
+                        <td>Devuelve CIERTO si n1 y n2 son iguales, falso sino.</td>
+                        <td class="code">
+                            <span class="kw1">Iguales? </span>
+                            <span class="nu0">10 2*5</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">Y </span>
+                            <span class="nu0">n1 n2</span>
+                        </td>
+                        <td class="code"> &</td>
+                        <td>Devuelve CIERTO si las dos condiciones n1 Y n2 son ciertos.</td>
+                        <td class="code">
+                            <span class="kw1">Y </span>
+                            <span class="nu0">(10>2) (2>5)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">NOIGUAL? </span>
+                            <span class="nu0">n1 n2</span>
+                        </td>
+                        <td class="code"> &lt &gt</td>
+                        <td>Devuelve CIERTO si n1 y n2 son iguales</td>
+                        <td class="code">
+                            <span class="kw1">NoIgual? </span>
+                            <span class="nu0">10 2*5</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">O </span>
+                            <span class="nu0">n1 n2</span>
+                        </td>
+                        <td class="code">|</td>
+                        <td>Devuelve CIERTO si al menos una de las condiciones es cierto.</td>
+                        <td class="code">
+                            <span class="kw1">O </span>
+                            <span class="nu0">(10>2) (2>5)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">MAYORQUE? </span>
+                            <span class="nu0">n1 n2</span>
+                        </td>
+                        <td class="code">&gt</td>
+                        <td>Devuelve CIERTO si n1 &GT;n2.</td>
+                        <td class="code">
+                            <span class="kw1">MayorQue? </span>
+                            <span class="nu0">10 2*5</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">MENORQUE? </span>
+                            <span class="nu0">n1 n2</span>
+                        </td>
+                        <td class="code">&lt</td>
+                        <td>Devuelve CIERTO si n1 &LT;n2.</td>
+                        <td class="code">
+                            <span class="kw1">MenorQue? </span>
+                            <span class="nu0">10 2*5</span>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <caption>Estructuras de control</caption>
+                    <tr>
+                        <th width="20%">Primitivas</th>
+                        <th width="10%">Alias</th>
+                        <th width="50%">Descripción</th>
+                        <th width="30%">Ejemplo</th>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">EJECUTA </span>
+                            <span class="nu0">l</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Ejecute las ordenes contenidas en la lista l.</td>
+                        <td class="code">
+                            <span class="kw1">Ejectuta </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">REPITE </span>
+                            <span class="nu0">n l</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Repite la lista de instrucciones tantas veces como se indica en el número.</td>
+                        <td class="code">
+                            <span class="kw1">REPETE </span>
+                            <span class="nu0">4 [Avanza 10 GiraDerecha 90]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="code">
+                            <span class="kw1">SI </span>
+                            <span class="nu0">c l</span>
+                        </td>
+                        <td class="code"></td>
+                        <td>Realiza una instrucción o un conjunto de instrucciones si se cumple la condición expresada..
+                        </td>
+                        <td class="code">
+                            <span class="kw1">SI </span>
+                            <span class="nu0">(10>2) [RE 10 GD 20]</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="tabs-ex" style="height:260px;overflow:auto;">
+                <label for="files">Seleccione un ejemplo :</label>
+                <select name="files" id="files" style="width: 250px">
+                    <optgroup label="Básico">
+                        <option value="bases" >Patrones básicos</option>
+                        <option value="dessin">Dibujos simples</option>
+                        <option value="rudge">Introductory Programming Using Logo</option>
+                        <option value="xlogo">Ejemplos de programas XLogo</option>
+                    </optgroup>
+                    <optgroup label="La recursividad">
+                        <option value="triangle">Triángulos</option>
+                        <option value="dragon">Dragón</option>
+                        <option value="arbre">Arboles</option>
+                        <option value="courbes">Curvas recursivas</option>
+                    </optgroup>
+                    <optgroup label="Avanzado">
+                        <option value="data">Con datos</option>
+                    </optgroup>
+                    <optgroup label="Robot">
+                        <option value="hasard">Al azar</option>
+                        <option value="evenements">Con obstables</option>
+                    </optgroup>
+                    <optgroup label="Pruebas">
+                        <option value="test">Pruebas básicas</option>
+                    </optgroup>
+                </select>
+                <button id="charger" style="vertical-align: top;margin-top:2px;">Cargar</button>
+                <div id="exeditor_es"
+                    style="height: 200px;border: 1px solid #DDD;border-radius: 4px; border-bottom-right-radius: 0px; margin-top: 5px; display: none">
+                </div>
+            </div>
+            <div id="tabs-export" style="height:260px;overflow:auto;">
+                <p>
+                    Puedes descargar tu dibujo a partir de <a href="" id="linkpng" download="Logo.png">aquí (en PNG)</a>
+                    o de <a href="" id="linksvg" download="Logo.svg">ahí (en SVG)</a>.
+                </p>
+            </div>
+            <div id="tabs-ayuda" style="height:260px;overflow:auto;">
+                <p>En el editor Logo pulse Ctrl+espacio para activar el sistema de autofinalización de términos.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts propios -->
+    <script src="js/Main.js"></script>
+    <script src="js/ace/src/ace.js"></script>
+    <script src="js/ace/src/ext-language_tools.js"></script>
+    <!-- <script src="js/OrbitControls.js"></script> -->
+    <script src="js/Comunes.js"></script>
+    <script src="js/LWLogo.js"></script>
+    <script src="js/Monde.js"></script>
+    <script src="js/Dibujo.js"></script>
+    <script src="js/Tortuga.js"></script>
+    <script src="js/Lexicale.js"></script>
+    <script src="js/Interpreteur.js"></script>
+    <script src="js/Reference.js"></script>
+</body>
+
+</html>
